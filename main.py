@@ -70,25 +70,34 @@ class Player:
         new_action = self.action if "idle" in self.action else "idle"
         new_direction = self.direction
 
-        if keys[pygame.K_SPACE]:
-            new_direction = "down"
-            new_action = "read"
-        if keys[pygame.K_LEFT]:
-            new_x -= self.speed
-            new_direction = "left"
-            new_action = "walk"
-        if keys[pygame.K_RIGHT]:
-            new_x += self.speed
-            new_direction = "right"
-            new_action = "walk"
-        if keys[pygame.K_UP]:
-            new_y -= self.speed
-            new_direction = "up"
-            new_action = "walk"
+        # Bloquer le mouvement si UP et DOWN sont pressés en même temps
+        if keys[pygame.K_UP] and keys[pygame.K_DOWN]:
+            return
+
+        # Bloquer le mouvement si LEFT et RIGHT sont pressés en même temps
+        if keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]:
+            return
+
         if keys[pygame.K_DOWN]:
             new_y += self.speed
             new_direction = "down"
             new_action = "walk"
+        elif keys[pygame.K_UP]:
+            new_y -= self.speed
+            new_direction = "up"
+            new_action = "walk"
+        elif keys[pygame.K_LEFT]:
+            new_x -= self.speed
+            new_direction = "left"
+            new_action = "walk"
+        elif keys[pygame.K_RIGHT]:
+            new_x += self.speed
+            new_direction = "right"
+            new_action = "walk"
+
+        elif keys[pygame.K_SPACE]:
+            new_direction = "down"
+            new_action = "read"
 
         # On réinitialise l'animation si l'action ou la direction change
         if new_direction != self.direction or new_action != self.action:
