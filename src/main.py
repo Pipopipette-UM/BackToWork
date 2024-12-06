@@ -37,10 +37,17 @@ def main():
 
         # Animation unique (toggle sortir le téléphone et le ranger)
         if keys[pygame.K_f] and player.unique_animation is None:
-            if player.action != "idle_phone":
-                player.play_unique_animation([56 * 6 + i for i in range(4)], "idle_phone")
-            else:
-                player.play_unique_animation([56 * 6 + 8 + i for i in range(4)])
+            player.play_unique_animation_by_name("phone")
+
+        if keys[pygame.K_k] and player.unique_animation is None:
+            player.play_unique_animation_by_name("hurt")
+
+        if keys[pygame.K_l] and player.unique_animation is None:
+            player.play_unique_animation_by_name("shoot")
+
+        if keys[pygame.K_n] and player.unique_animation is None:
+            player.play_unique_animation_by_name("catch")
+
 
         # On met à jour les portes
         map_renderer.update_doors(player)

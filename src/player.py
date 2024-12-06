@@ -165,6 +165,22 @@ class Player:
                 self.sprite = self.tiles[56 * 1 + direction_frames[self.direction] * 6 + self.animation_frame]
                 self.animation_frame = (self.animation_frame + 1) % 6
 
+
+    def play_unique_animation_by_name(self, name):
+        direction_frames = {"down": 3, "left": 2, "right": 0, "up": 1}
+        if name == "phone":
+            if self.action != "idle_phone":
+                self.play_unique_animation([56 * 6 + i for i in range(4)], "idle_phone")
+            else:
+                self.play_unique_animation([56 * 6 + 8 + i for i in range(4)])
+        elif name == "hurt":
+            self.play_unique_animation([56 * 19 + i + direction_frames[self.direction] * 3 for i in range(3)])
+        elif name == "shoot":
+            self.play_unique_animation([56 * 18 + i + direction_frames[self.direction] * 3 for i in range(3)])
+        elif name == "catch":
+            self.play_unique_animation([56 * 15 + i + direction_frames[self.direction] * 6 for i in range(6)])
+
+
     def play_unique_animation(self, animation_frames=None, action="idle"):
         """Joue une animation unique qui se répète une seule fois."""
         self.animation_timer += 1
