@@ -1,7 +1,5 @@
 from enum import Enum
 
-from tensorflow.python.ops.numpy_ops.np_random import random
-
 from player import Player
 
 State = Enum('agentState', [("IDLE", 1), ("HUNGRY", 2), ("RUNNING_BACK", 3), ("LOOKING", 4)])

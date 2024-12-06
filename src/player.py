@@ -43,7 +43,50 @@ class Player:
             tile_x_right] != 0
 
     def move(self, direction):
-        pass
+        """Met à jour la position et l'animation du joueur."""
+        new_x, new_y = self.x, self.y
+
+        # None si l'action en cours ne contient pas idle
+        new_action = self.action if "idle" in self.action else "idle"
+        new_direction = self.direction
+
+        if direction == "down":
+            new_y += self.speed
+            new_direction = "down"
+            new_action = "walk"
+        elif direction == "up":
+            new_y -= self.speed
+            new_direction = "up"
+            new_action = "walk"
+        elif direction == "left":
+            new_x -= self.speed
+            new_direction = "left"
+            new_action = "walk"
+        elif direction == "right":
+            new_x += self.speed
+            new_direction = "right"
+            new_action = "walk"
+
+        elif direction == "read":
+            new_direction = "down"
+            new_action = "read"
+
+        # On réinitialise l'animation si l'action ou la direction change
+        if new_direction != self.direction or new_action != self.action:
+            self.animation_frame = 0
+
+        # On vérifie si la nouvelle position est valide
+        if self.can_move_to(new_x, new_y):
+            self.x, self.y = new_x, new_y
+
+        self.direction = new_direction
+        self.action = new_action
+
+        # Si une animation unique est en cours, on la joue
+        if self.unique_animation:
+            self.play_unique_animation()
+        else:
+            self.animate()
 
     def update(self, keys):
         """Met à jour la position et l'animation du joueur."""
