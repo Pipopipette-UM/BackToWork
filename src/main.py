@@ -7,9 +7,11 @@ from pytmx import load_pygame
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from map_renderer import MapRenderer
 from player import Player
-
+from teacher_agent import TeacherAgent
+from child_agent import ChildAgent
 
 def main():
+    dt = 0
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Back to Work!")
@@ -20,6 +22,8 @@ def main():
     # On initialise le joueur et le renderer de la carte
     player = Player(380, 340, tmx_data, "../assets/characters/teacher.png")
     map_renderer = MapRenderer(tmx_data)
+    teacher = TeacherAgent(340, 380, tmx_data, "../assets/characters/teacher.png")
+    child  = ChildAgent(400, 400, tmx_data, "../assets/characters/01.png")
 
     # Boucle principale
     clock = pygame.time.Clock()
@@ -45,16 +49,30 @@ def main():
         screen.fill((58, 58, 80))  # Couleur de fond
         map_renderer.draw(screen, 0, player)
 
+        # On creer notre environnement
+        environment = {
+            "candy_pos": (0, 0),
+            "child": [],
+            "teacher": 'teacher'
+        }
+
         # On met à jour le joueur et on le dessine
         player.update(keys)
         player.draw(screen)
+
+        # On met à jour les agents
+        teacher.update(environment, dt)
+        teacher.player.draw(screen)
+
+        child.update(environment, dt)
+        child.player.draw(screen)
 
         # On dessine la partie de la carte au-dessus du joueur
         map_renderer.draw(screen, 2, player)
         pygame.display.flip()
 
         # Latence pour maintenir un taux de rafraîchissement constant de 60 FPS
-        clock.tick(60)
+        dt = clock.tick(60) / 1000
 
     pygame.quit()
 

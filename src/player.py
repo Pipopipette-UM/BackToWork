@@ -42,6 +42,9 @@ class Player:
         return self.path_layer.data[tile_y_left][tile_x_left] != 0 and self.path_layer.data[tile_y_right][
             tile_x_right] != 0
 
+    def move(self, direction):
+        pass
+
     def update(self, keys):
         """Met à jour la position et l'animation du joueur."""
         new_x, new_y = self.x, self.y
