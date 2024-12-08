@@ -17,9 +17,14 @@ class TeacherAgent(Agent):
         else:
             self.searchChild()
 
+    def child_caught(self):
+        self.score += 1
+        self.backToSpawn()
+        self.player.play_unique_animation_by_name("catch")
+
     def backToSpawn(self):
         self.moveToPosition(self.base_position[0], self.base_position[1])
 
     def searchChild(self):
-        child_x, child_y = self.target.x, self.target.y
+        child_x, child_y = self.target.player.x, self.target.player.y
         self.moveToPosition(child_x, child_y)

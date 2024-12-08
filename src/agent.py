@@ -10,6 +10,7 @@ class Agent:
         self.player = Player(x,y,tmx_data, filename)
         self.base_position = (x,y)
         self.state = State.IDLE
+        self.score = 0
 
     def update(self, environment, dt):
         pass

@@ -17,7 +17,7 @@ class ChildAgent(Agent):
                 self.hungry_timer = random.randint(5, 20)
 
         elif self.state == State.HUNGRY:
-            self.searchCandy(environment["candy_pos"])
+            self.searchCandy(environment["toybox_pos"])
             #if environment["candy_pos"][0] == self.x and environment["candy_pos"][1] == self.y:
             #    print("hmmm nice candy")
             #    self.candyEat+= 1
@@ -26,11 +26,24 @@ class ChildAgent(Agent):
             #    print("Searching ")
 
         elif self.state == State.RUNNING_BACK:
-            if self.x == self.base_position[0] and self.y == self.base_position[1]:
+            if self.player.x == self.base_position[0] and self.player.y == self.base_position[1]:
                 print("i m sitting again")
                 self.state  = State.IDLE
             else:
                 self.backToSpawn()
+                self.player.animate()
+
+            if self.player.x == self.base_position[0] and self.player.y == self.base_position[1]:
+                self.player.animate()
+
+    def teacher_caught_you(self):
+        self.state = State.RUNNING_BACK
+
+    def play_with_toy(self, toybox):
+        self.score += 1
+        self.hungry_timer = random.randint(5, 20)
+        self.state = State.RUNNING_BACK
+        print("playing with toy")
 
 
     def searchCandy(self,candy_pos):
@@ -38,7 +51,7 @@ class ChildAgent(Agent):
         self.moveToPosition(candy_x, candy_y)
 
     def backToSpawn(self):
-        self.moveToPosition(self.base_position[0], self.base_position[1], grid_size)
+        self.moveToPosition(self.base_position[0], self.base_position[1])
 
     def teacherCaughtYou(self):
         self.state = State.RUNNING_BACK
