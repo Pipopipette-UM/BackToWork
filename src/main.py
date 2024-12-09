@@ -12,6 +12,9 @@ from teacher_agent import TeacherAgent
 from child_agent import ChildAgent
 from toybox import Toybox
 
+from pathfinding import Dijkstra
+from pathfinding import AStar
+
 def checkCollision(environment, childs, teacher, toybox):
 
     pos_teacher = get_tile_coordinate(environment["teacher"][0], environment["teacher"][1])
@@ -52,6 +55,15 @@ def draw_scores(screen, scores,font):
         score_surface = font.render(text, True, (255, 255, 255))  # Texte blanc
         screen.blit(score_surface, (SCREEN_WIDTH-150, 10 + i * 30))  # Décalage entre chaque ligne
 
+def display_path(grid,color,screen,font):
+    font = pygame.font.Font(None, 24)
+    for y, row in enumerate(zip(*grid)): 
+                for x, cell in enumerate(row):
+                    if cell == 1: #Mur 
+                        text = font.render(str(cell), True, (255, 255, 255))
+                        #pygame.draw.rect(screen, (255, 255, 255), (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), 50)
+                    if cell == -1: #Chemin
+                        pygame.draw.rect(screen, color, (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
 
 def main():
     dt = 0
@@ -70,10 +82,11 @@ def main():
     # On initialise le joueur et le renderer de la carte
     player = Player(380, 340, tmx_data, "../assets/characters/teacher.png")
     map_renderer = MapRenderer(tmx_data)
-    teacher = TeacherAgent(340, 380, tmx_data, "../assets/characters/teacher.png")
-    child  = ChildAgent(400, 400, tmx_data, "../assets/characters/01.png")
-
-    toybox = Toybox(32*6, 32*9, tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
+    teacher = TeacherAgent(12*TILE_SIZE, 12*TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
+    child  = ChildAgent(19*TILE_SIZE, 14*TILE_SIZE, tmx_data, "../assets/characters/01.png")
+    
+    #toybox = Toybox(32*6, 32*9, tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
+    candy_pos = (TILE_SIZE*6, TILE_SIZE*9)
     # Boucle principale
     clock = pygame.time.Clock()
     running = True
@@ -81,6 +94,14 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                tile_x, tile_y = mouse_x // TILE_SIZE, mouse_y // TILE_SIZE
+                
+                candy_pos = (tile_x*TILE_SIZE, tile_y*TILE_SIZE)
+                print("new candy position ", environment["toybox_pos"])
+                child.state = State.HUNGRY
 
 
 
@@ -109,7 +130,7 @@ def main():
 
         # On creer notre environnement
         environment = {
-            "toybox_pos": (toybox.x, toybox.y),
+            "toybox_pos": (candy_pos[0], candy_pos[1]),
             "child": [child],
             "teacher": (teacher.player.x, teacher.player.y),
             "player": (player.x, player.y)
@@ -118,7 +139,7 @@ def main():
 
 
         # On vérifie les collisions
-        checkCollision(environment, [child], teacher, toybox)
+        #checkCollision(environment, [child], teacher, toybox)
 
         scores = {
             "child": child.score,
@@ -127,8 +148,8 @@ def main():
 
         draw_scores(screen, scores, font)
 
-        toybox.animate()
-        toybox.draw(screen)
+        #toybox.animate()
+        #toybox.draw(screen)
         
         # On met à jour le joueur et on le dessine
         player.update(keys)
@@ -140,6 +161,12 @@ def main():
 
         child.update(environment, dt)
         child.player.draw(screen)
+
+        
+        display_path(teacher.grid,(255,0,0),screen,font)
+
+        display_path(child.grid,(0,255,0),screen,font)
+        
 
         # On dessine la partie de la carte au-dessus du joueur
         map_renderer.draw(screen, 2, player)

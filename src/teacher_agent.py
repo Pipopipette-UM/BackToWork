@@ -1,10 +1,15 @@
 from agent import Agent, State
+from pathfinding import TileUtils
+from pathfinding import AStar
+from pathfinding import Dijkstra
 
 class TeacherAgent(Agent):
 
     def __init__(self,x,y,tmx_data, filename):
         super().__init__(x,y,tmx_data, filename)
         self.target = None
+        self.grid = []
+        self.path = []
 
     def update(self, environment,dt):
         if self.target is None or self.target.state != State.HUNGRY:
@@ -27,4 +32,17 @@ class TeacherAgent(Agent):
 
     def searchChild(self):
         child_x, child_y = self.target.player.x, self.target.player.y
-        self.moveToPosition(child_x, child_y)
+
+        self.grid, self.path = Dijkstra.find_path((self.player.x, self.player.y), (child_x, child_y), self.player.path_layer)
+        
+        if len(self.path) <= 1:
+            return
+        
+        next_pos = self.path[1]
+        print(f'next_pos: {next_pos}')
+        next_pos = TileUtils.tile_to_position(next_pos[0], next_pos[1])
+        
+        selfpos = TileUtils.position_to_tile(self.player.x, self.player.y)
+        
+        print(f'going after child from {selfpos} to {next_pos}')
+        self.moveToPosition(next_pos[0], next_pos[1])
