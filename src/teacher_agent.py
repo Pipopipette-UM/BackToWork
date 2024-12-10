@@ -39,10 +39,8 @@ class TeacherAgent(Agent):
             return
         
         next_pos = self.path[1]
-        print(f'next_pos: {next_pos}')
         next_pos = TileUtils.tile_to_position(next_pos[0], next_pos[1])
         
         selfpos = TileUtils.position_to_tile(self.player.x, self.player.y)
-        
-        print(f'going after child from {selfpos} to {next_pos}')
+
         self.moveToPosition(next_pos[0], next_pos[1])

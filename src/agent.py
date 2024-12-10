@@ -19,12 +19,10 @@ class Agent:
         dx, dy = 0, 0
         # TODO algo pathfinding
         if self.player.x < x:
-            print("allllooooo")
             self.player.move("right")
         elif self.player.x > x:
             self.player.move("left")
         elif self.player.y < y:
             self.player.move("down")
         elif self.player.y > y:
-            print("allllhauuuut")
             self.player.move("up")
