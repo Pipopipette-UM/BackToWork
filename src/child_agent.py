@@ -22,6 +22,7 @@ class ChildAgent(Agent):
             if self.hungry_timer <= 0:
                 self.state = State.HUNGRY
                 self.hungry_timer = random.randint(MIN_HUNGRY_TIMER, MAX_HUNGRY_TIMER)
+            self.player.animate()
 
         elif self.state == State.HUNGRY:
             if not self.path:
@@ -35,7 +36,6 @@ class ChildAgent(Agent):
                 self.base_position[0], self.base_position[1]), self.player.path_layer)
             self.back_to_spawn()
 
-        self.player.animate()
 
     def teacher_caught_you(self):
         self.state = State.RUNNING_BACK
@@ -49,7 +49,11 @@ class ChildAgent(Agent):
         self.state = State.RUNNING_BACK
 
     def search_candy(self):
+        # Parfois le coffre est vide, donc on fait attendre le joueur.
         if len(self.path) == 0:
+            self.player.action = "idle"
+            self.player.direction = "up"
+            self.player.animate()
             return
 
         next_pos = self.path[0]

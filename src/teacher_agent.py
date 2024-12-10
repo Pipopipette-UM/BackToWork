@@ -31,7 +31,7 @@ class TeacherAgent(Agent):
         base_tile_x, base_tile_y = TileUtils.position_to_tile(self.base_position[0], self.base_position[1])
 
         if tile_x == base_tile_x and tile_y == base_tile_y:
-            self.player.move("idle")
+            self.player.animate()
         environment["teacher"] = (self.player.x, self.player.y)
 
     def child_caught(self):

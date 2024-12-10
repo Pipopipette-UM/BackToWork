@@ -16,10 +16,6 @@ class Agent:
         pass
 
     def move_to_position(self, x, y):
-        if self.player.unique_animation is not None:
-            self.player.move("")
-            return
-
         if self.player.x < x:
             self.player.move("right")
         elif self.player.x > x:
