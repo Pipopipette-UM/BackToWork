@@ -67,10 +67,6 @@ class Player:
             new_direction = "right"
             new_action = "walk"
 
-        elif direction == "read":
-            new_direction = "down"
-            new_action = "read"
-
         # On réinitialise l'animation si l'action ou la direction change
         if new_direction != self.direction or new_action != self.action:
             self.animation_frame = 0

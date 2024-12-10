@@ -33,19 +33,19 @@ class TileUtils:
 
     @staticmethod
     def up(node):
-        return (node[0]-1,node[1])
+        return node[0] - 1,node[1]
 
     @staticmethod
     def down(node):
-        return (node[0]+1,node[1])
+        return node[0] + 1,node[1]
 
     @staticmethod
     def left(node):
-        return (node[0],node[1]-1)
+        return node[0], node[1] - 1
 
     @staticmethod
     def right(node):
-        return (node[0],node[1]+1)
+        return node[0], node[1] + 1
     
     @staticmethod
     def get_neighbours(grid, x, y):
@@ -54,7 +54,7 @@ class TileUtils:
             for j in range(-1, 2):
                 if i == 0 and j == 0:
                     continue
-                if x + i >= 0 and x + i < len(grid) and y + j >= 0 and y + j < len(grid[0]):
+                if 0 <= x + i < len(grid) and 0 <= y + j < len(grid[0]):
                     neighbours.append((x + i, y + j))
         return neighbours
     
@@ -71,10 +71,8 @@ class TileUtils:
 
 
 #https://lunalux.io/dijkstras-algorithm-for-grids-in-python/
-class Dijkstra():
-    
-    
-    
+class Dijkstra:
+
     @staticmethod
     def notused(start, end, path_layer):
         #print(type(grid))

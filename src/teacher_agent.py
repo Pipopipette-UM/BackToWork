@@ -13,9 +13,9 @@ class TeacherAgent(Agent):
 
     def update(self, environment,dt):
         if self.target is None or self.target.state != State.HUNGRY:
-            for i in range(len(environment["child"])):
-                if environment["child"][i].state == State.HUNGRY:
-                    self.target = environment["child"][i]
+            for i in range(len(environment["children"])):
+                if environment["children"][i].state == State.HUNGRY:
+                    self.target = environment["children"][i]
 
             if self.target is None or self.target.state != State.HUNGRY:
                 if (self.path == []):
