@@ -98,6 +98,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            # Si on clique sur la souris, on change la position de la boîte à jouet et on met les enfants en état de faim
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 tile_x, tile_y = mouse_x // TILE_SIZE, mouse_y // TILE_SIZE
@@ -154,11 +155,12 @@ def main():
 
         # On met à jour les agents
         teacher.update(environment, dt)
-        teacher.player.draw(screen)
-
         for child in children:
             child.update(environment, dt)
-            child.player.draw(screen)
+
+        # On dessine les agents de haut en bas
+        for agent in sorted(children + [teacher], key=lambda x: x.player.y):
+            agent.player.draw(screen)
 
         # On dessine les chemins des agents
         if DISPLAY_PATH :

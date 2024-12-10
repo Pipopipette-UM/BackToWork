@@ -3,13 +3,14 @@ import random
 from agent import Agent, State
 from pathfinding import Dijkstra
 from pathfinding import TileUtils
+from constants import MIN_HUNGRY_TIMER, MAX_HUNGRY_TIMER
 
 
 class ChildAgent(Agent):
 
     def __init__(self, x, y, tmx_data, filename):
         Agent.__init__(self, x, y, tmx_data, filename)
-        self.hungry_timer = random.randint(1, 1)
+        self.hungry_timer = random.randint(0, MIN_HUNGRY_TIMER)
         self.candyEat = 0
 
         self.grid = []
@@ -19,11 +20,8 @@ class ChildAgent(Agent):
         if self.state == State.IDLE:
             self.hungry_timer -= dt
             if self.hungry_timer <= 0:
-                print("i am hungry!")
                 self.state = State.HUNGRY
-                self.hungry_timer = random.randint(5, 20)
-            else :
-                self.player.move("idle")
+                self.hungry_timer = random.randint(MIN_HUNGRY_TIMER, MAX_HUNGRY_TIMER)
 
         elif self.state == State.HUNGRY:
             if not self.path:
@@ -32,14 +30,10 @@ class ChildAgent(Agent):
             self.search_candy()
 
         elif self.state == State.RUNNING_BACK:
-            if self.player.x == self.base_position[0] and self.player.y == self.base_position[1]:
-                print("i m sitting again")
-                self.state = State.IDLE
-            else:
-                if not self.path:
-                    (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), (
-                    self.base_position[0], self.base_position[1]), self.player.path_layer)
-                self.back_to_spawn()
+            if not self.path:
+                (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), (
+                self.base_position[0], self.base_position[1]), self.player.path_layer)
+            self.back_to_spawn()
 
         self.player.animate()
 
@@ -53,7 +47,6 @@ class ChildAgent(Agent):
         self.score += 1
         self.hungry_timer = random.randint(5, 20)
         self.state = State.RUNNING_BACK
-        print("playing with toy")
 
     def search_candy(self):
         if len(self.path) == 0:
@@ -71,6 +64,7 @@ class ChildAgent(Agent):
         if len(self.path) == 0:
             self.player.direction = "down"
             self.player.action = "read"
+            self.state = State.IDLE
             return
 
         # On récupère la prochaine position à atteindre et on la retire de la liste des positions à parcourir.
