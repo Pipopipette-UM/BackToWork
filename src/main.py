@@ -6,7 +6,7 @@ from child_agent import ChildAgent
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT
 from map_renderer import MapRenderer
 from player import Player
-from src.toybox import Toybox
+from toybox import Toybox
 from teacher_agent import TeacherAgent
 
 
@@ -84,7 +84,7 @@ def main():
     candy_pos = TOYBOX_POS
 
     environment = {
-        "toybox_pos": (candy_pos[0], candy_pos[1]),
+        "toybox_pos": (TOYBOX_POS[0], TOYBOX_POS[1]),
         "children": children,
         "teacher": (teacher.player.x, teacher.player.y),
         "player": (player.x, player.y)
