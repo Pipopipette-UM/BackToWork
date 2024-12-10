@@ -80,7 +80,7 @@ class MapRenderer:
             for tile in door["tiles"]:
                 tile["gid"] = tile["frames"][door["current_frame"]].gid
 
-    def draw(self, screen, layer_index, player):
+    def draw(self, screen, layer_index):
         """Dessine la carte et gère les animations de tuiles."""
         current_time = pygame.time.get_ticks()
 

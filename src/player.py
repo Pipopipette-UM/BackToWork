@@ -20,7 +20,6 @@ class Player:
         self.path_layer = self.get_path_layer()
         self.unique_animation = None
         self.unique_animation_frame = 0
-        self.stun_timer = 0
 
     def get_path_layer(self):
         """Récupère la couche 'path' de la carte TMX."""
@@ -171,11 +170,11 @@ class Player:
             else:
                 self.play_unique_animation([56 * 6 + 8 + i for i in range(4)])
         elif name == "hurt":
-            self.play_unique_animation([56 * 19 + i + direction_frames[self.direction] * 3 for i in range(3)], "hurt")
+            self.play_unique_animation([56 * 19 + i + direction_frames[self.direction] * 3 for i in range(3)])
         elif name == "shoot":
-            self.play_unique_animation([56 * 18 + i + direction_frames[self.direction] * 3 for i in range(3)], "shoot")
+            self.play_unique_animation([56 * 18 + i + direction_frames[self.direction] * 3 for i in range(3)])
         elif name == "catch":
-            self.play_unique_animation([56 * 15 + i + direction_frames[self.direction] * 6 for i in range(6)], "catch")
+            self.play_unique_animation([56 * 15 + i + direction_frames[self.direction] * 6 for i in range(6)])
 
 
     def play_unique_animation(self, animation_frames=None, action="idle"):
@@ -196,10 +195,10 @@ class Player:
                 frame = self.unique_animation[self.unique_animation_frame]
                 self.sprite = self.tiles[frame]  # Mise à jour du sprite avec la frame actuelle
                 self.unique_animation_frame += 1
-            else:
-                # Une fois l'animation terminée, on la réinitialise
-                self.unique_animation = None
-                self.unique_animation_frame = 0
+        else:
+            # Une fois l'animation terminée, on la réinitialise
+            self.unique_animation = None
+            self.unique_animation_frame = 0
 
     def draw(self, screen):
         """Dessine le joueur à l'écran."""

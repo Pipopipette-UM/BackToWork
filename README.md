@@ -35,7 +35,7 @@ Follow these steps to set up and run the project:
    Install the required libraries using pip:
 
    ```bash
-   pip install pygame pytmx
+   pip install pygame pytmx numpy
    ```
 
 4. **Run the Game:**

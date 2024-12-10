@@ -1,7 +1,7 @@
-from agent import Agent, State
 import random
+
+from agent import Agent, State
 from pathfinding import Dijkstra
-from pathfinding import AStar
 from pathfinding import TileUtils
 
 
@@ -26,7 +26,7 @@ class ChildAgent(Agent):
                 self.player.move("idle")
 
         elif self.state == State.HUNGRY:
-            if self.path == []:
+            if not self.path:
                 (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), (
                 environment["toybox_pos"][0], environment["toybox_pos"][1]), self.player.path_layer)
             self.search_candy()
@@ -36,7 +36,7 @@ class ChildAgent(Agent):
                 print("i m sitting again")
                 self.state = State.IDLE
             else:
-                if (self.path == []):
+                if not self.path:
                     (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), (
                     self.base_position[0], self.base_position[1]), self.player.path_layer)
                 self.back_to_spawn()
@@ -60,27 +60,23 @@ class ChildAgent(Agent):
             return
 
         next_pos = self.path[0]
-        # l'algo ne prend pas en compte les obstacles !!! ????
         if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
             self.path.pop(0)
 
         next_pos = TileUtils.tile_to_position(next_pos[0], next_pos[1])
-        self.moveToPosition(next_pos[0], next_pos[1])
+        self.move_to_position(next_pos[0], next_pos[1])
 
     def back_to_spawn(self):
-
+        # Si le joueur est arrivé à sa position de base, on le met en mode IDLE (lecture).
         if len(self.path) == 0:
+            self.player.direction = "down"
+            self.player.action = "read"
             return
 
+        # On récupère la prochaine position à atteindre et on la retire de la liste des positions à parcourir.
         next_pos = self.path[0]
-
         if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
             self.path.pop(0)
 
         next_pos = TileUtils.tile_to_position(next_pos[0], next_pos[1])
-
-        self.moveToPosition(next_pos[0], next_pos[1])
-
-    def eat(self):
-        print(" is eating.")
-        self.state = State.IDLE
+        self.move_to_position(next_pos[0], next_pos[1])

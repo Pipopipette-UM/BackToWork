@@ -3,7 +3,7 @@ from pytmx import load_pygame
 
 from agent import State
 from child_agent import ChildAgent
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT, DISPLAY_PATH, USE_PLAYER
 from map_renderer import MapRenderer
 from player import Player
 from toybox import Toybox
@@ -13,20 +13,20 @@ from teacher_agent import TeacherAgent
 def check_collision(environment, children, teacher, toybox):
     pos_teacher = get_tile_coordinate(environment["teacher"][0], environment["teacher"][1])
     pos_toybox = get_tile_coordinate(environment["toybox_pos"][0], environment["toybox_pos"][1])
-    pos_player = get_tile_coordinate(environment["player"][0], environment["player"][1])
-    for i in range (len(environment["children"])):
-        if children[i].state == State.HUNGRY:
-            pos_child = get_tile_coordinate(environment["children"][i].player.x, environment["children"][i].player.y)
+    for child in children:
+        if child.state == State.HUNGRY:
+            pos_child = get_tile_coordinate(child.player.x, child.player.y)
             if pos_child[0] == pos_teacher[0] and pos_child[1] == pos_teacher[1] or pos_child[2] == pos_teacher[2] and pos_child[3] == pos_teacher[3]:
-                children[i].teacher_caught_you()
+                child.teacher_caught_you()
                 teacher.child_caught()
-                children[i].player.stun_timer = 60
-                teacher.player.stun_timer = 60
             if (pos_child[0] == pos_toybox[0] and pos_child[1] == pos_toybox[1] or pos_child[2] == pos_toybox[2] and pos_child[3] == pos_toybox[3]) and toybox.is_full:
-                children[i].play_with_toy()
+                child.play_with_toy()
                 toybox.is_used()
-    if ((pos_player[0] == pos_toybox[0] and pos_player[1] == pos_toybox[1]) or (pos_player[2] == pos_toybox[2] and pos_player[3] == pos_toybox[3])) and  toybox.is_full:
-        toybox.is_used()
+
+    if USE_PLAYER:
+        pos_player = get_tile_coordinate(environment["player"][0], environment["player"][1])
+        if ((pos_player[0] == pos_toybox[0] and pos_player[1] == pos_toybox[1]) or (pos_player[2] == pos_toybox[2] and pos_player[3] == pos_toybox[3])) and toybox.is_full:
+            toybox.is_used()
 
 
 
@@ -73,22 +73,22 @@ def main():
     # On charge la carte TMX
     tmx_data = load_pygame("../map/BacktoWork.tmx")
 
-    # On initialise le joueur et le renderer de la carte
-    player = Player(380, 340, tmx_data, "../assets/characters/teacher.png")
+    # On initialise le renderer de la carte et les agents
     map_renderer = MapRenderer(tmx_data)
     teacher = TeacherAgent(12*TILE_SIZE, 12*TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
-
-    # On initialise les enfants avec leurs positions
     children = [ChildAgent(CHILDREN_POS[i][0], CHILDREN_POS[i][1], tmx_data, "../assets/characters/0" + str(i + 1) + ".png") for i in range(CHILDREN_COUNT)]
     toybox = Toybox(TOYBOX_POS[0], TOYBOX_POS[1], tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
-    candy_pos = TOYBOX_POS
+    player = None
 
     environment = {
         "toybox_pos": (TOYBOX_POS[0], TOYBOX_POS[1]),
         "children": children,
         "teacher": (teacher.player.x, teacher.player.y),
-        "player": (player.x, player.y)
     }
+
+    if USE_PLAYER:
+        player = Player(380, 340, tmx_data, "../assets/characters/teacher.png")
+        environment["player"] = (player.x, player.y)
 
     # Boucle principale
     clock = pygame.time.Clock()
@@ -109,25 +109,30 @@ def main():
 
         keys = pygame.key.get_pressed()
 
-        # Animation unique (toggle sortir le téléphone et le ranger)
-        if keys[pygame.K_f] and player.unique_animation is None:
-            player.play_unique_animation_by_name("phone")
+        if USE_PLAYER:
+            # Animation unique (toggle sortir le téléphone et le ranger)
+            if keys[pygame.K_f] and player.unique_animation is None:
+                player.play_unique_animation_by_name("phone")
 
-        if keys[pygame.K_k] and player.unique_animation is None:
-            player.play_unique_animation_by_name("hurt")
+            if keys[pygame.K_k] and player.unique_animation is None:
+                player.play_unique_animation_by_name("hurt")
 
-        if keys[pygame.K_l] and player.unique_animation is None:
-            player.play_unique_animation_by_name("shoot")
+            if keys[pygame.K_l] and player.unique_animation is None:
+                player.play_unique_animation_by_name("shoot")
 
-        if keys[pygame.K_n] and player.unique_animation is None:
-            player.play_unique_animation_by_name("catch")
+            if keys[pygame.K_n] and player.unique_animation is None:
+                player.play_unique_animation_by_name("catch")
 
         # On met à jour les portes
-        map_renderer.update_doors([player, teacher.player] + [child.player for child in children])
+
+        if USE_PLAYER:
+            map_renderer.update_doors([player, teacher.player] + [child.player for child in children])
+        else :
+            map_renderer.update_doors([teacher.player] + [child.player for child in children])
 
         # On dessine la carte sous le joueur
         screen.fill((58, 58, 80))  # Couleur de fond
-        map_renderer.draw(screen, 0, player)
+        map_renderer.draw(screen, 0)
 
         # On vérifie les collisions
         check_collision(environment, children, teacher, toybox)
@@ -143,8 +148,9 @@ def main():
         toybox.draw(screen)
         
         # On met à jour le joueur et on le dessine
-        player.update(keys)
-        player.draw(screen)
+        if USE_PLAYER:
+            player.update(keys)
+            player.draw(screen)
 
         # On met à jour les agents
         teacher.update(environment, dt)
@@ -155,12 +161,13 @@ def main():
             child.player.draw(screen)
 
         # On dessine les chemins des agents
-        display_path(teacher.grid, (255, 0, 0), screen, font)
-        for child in children:
-            display_path(child.grid, (0, 255, 0), screen, font)
+        if DISPLAY_PATH :
+            display_path(teacher.grid, (255, 0, 0), screen, font)
+            for child in children:
+                display_path(child.grid, (0, 255, 0), screen, font)
 
         # On dessine la partie de la carte au-dessus du joueur
-        map_renderer.draw(screen, 2, player)
+        map_renderer.draw(screen, 2)
         pygame.display.flip()
 
         # Latence pour maintenir un taux de rafraîchissement constant de 60 FPS

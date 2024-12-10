@@ -15,10 +15,9 @@ class Agent:
     def update(self, environment, dt):
         pass
 
-    def moveToPosition(self, x, y):
-        dx, dy = 0, 0
-        if self.player.stun_timer > 0:
-            self.player.stun_timer -= 1
+    def move_to_position(self, x, y):
+        if self.player.unique_animation is not None:
+            self.player.move("")
             return
 
         if self.player.x < x:
