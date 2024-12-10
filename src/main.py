@@ -3,10 +3,9 @@ from pytmx import load_pygame
 
 from agent import State
 from child_agent import ChildAgent
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT
 from map_renderer import MapRenderer
 from player import Player
-from src import constants
 from src.toybox import Toybox
 from teacher_agent import TeacherAgent
 
@@ -78,9 +77,9 @@ def main():
     teacher = TeacherAgent(12*TILE_SIZE, 12*TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
 
     # On initialise les enfants avec leurs positions
-    children = [ChildAgent(constants.children_pos[i][0], constants.children_pos[i][1], tmx_data, "../assets/characters/0" + str(i + 1) + ".png") for i in range(constants.CHILDREN_COUNT)]
-    toybox = Toybox(constants.toybox_pos[0], constants.toybox_pos[1], tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
-    candy_pos = constants.toybox_pos
+    children = [ChildAgent(CHILDREN_POS[i][0], CHILDREN_POS[i][1], tmx_data, "../assets/characters/0" + str(i + 1) + ".png") for i in range(CHILDREN_COUNT)]
+    toybox = Toybox(TOYBOX_POS[0], TOYBOX_POS[1], tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
+    candy_pos = TOYBOX_POS
 
     environment = {
         "toybox_pos": (candy_pos[0], candy_pos[1]),
