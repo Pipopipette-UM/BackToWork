@@ -17,8 +17,8 @@ class Agent:
 
     def moveToPosition(self, x, y):
         dx, dy = 0, 0
-        print(self.player.action)
-        if self.player.action == "hurt" or self.player.action == "catch":
+        if self.player.stun_timer > 0:
+            self.player.stun_timer -= 1
             return
 
         if self.player.x < x:

@@ -20,6 +20,7 @@ class Player:
         self.path_layer = self.get_path_layer()
         self.unique_animation = None
         self.unique_animation_frame = 0
+        self.stun_timer = 0
 
     def get_path_layer(self):
         """Récupère la couche 'path' de la carte TMX."""

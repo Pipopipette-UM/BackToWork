@@ -20,6 +20,8 @@ def check_collision(environment, children, teacher, toybox):
             if pos_child[0] == pos_teacher[0] and pos_child[1] == pos_teacher[1] or pos_child[2] == pos_teacher[2] and pos_child[3] == pos_teacher[3]:
                 children[i].teacher_caught_you()
                 teacher.child_caught()
+                childs[i].player.stun_timer = 60
+                teacher.player.stun_timer = 60
             if (pos_child[0] == pos_toybox[0] and pos_child[1] == pos_toybox[1] or pos_child[2] == pos_toybox[2] and pos_child[3] == pos_toybox[3]) and toybox.is_full:
                 children[i].play_with_toy()
                 toybox.is_used()
