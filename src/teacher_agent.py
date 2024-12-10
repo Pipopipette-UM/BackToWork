@@ -18,17 +18,38 @@ class TeacherAgent(Agent):
                     self.target = environment["child"][i]
 
             if self.target is None or self.target.state != State.HUNGRY:
+                if (self.path == []):
+                    (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), (
+                    self.base_position[0], self.base_position[1]), self.player.path_layer)
                 self.backToSpawn()
         else:
             self.searchChild()
 
+        tile_x,tile_y = TileUtils.position_to_tile(self.player.x, self.player.y)
+        base_tile_x, base_tile_y = TileUtils.position_to_tile(self.base_position[0], self.base_position[1])
+
+        if tile_x == base_tile_x and tile_y == base_tile_y:
+            self.player.move("idle")
+        self.player.animate()
+
     def child_caught(self):
         self.score += 1
-        self.backToSpawn()
+        self.path = []
+        self.grid = []
         self.player.play_unique_animation_by_name("catch")
+        self.target = None
 
     def backToSpawn(self):
-        self.moveToPosition(self.base_position[0], self.base_position[1])
+        if len(self.path) == 0:
+            return
+        next_pos = self.path[0]
+
+        if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
+            self.path.pop(0)
+
+        next_pos = TileUtils.tile_to_position(next_pos[0], next_pos[1])
+
+        self.moveToPosition(next_pos[0], next_pos[1])
 
     def searchChild(self):
         child_x, child_y = self.target.player.x, self.target.player.y

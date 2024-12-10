@@ -17,7 +17,10 @@ class Agent:
 
     def moveToPosition(self, x, y):
         dx, dy = 0, 0
-        # TODO algo pathfinding
+        print(self.player.action)
+        if self.player.action == "hurt" or self.player.action == "catch":
+            return
+
         if self.player.x < x:
             self.player.move("right")
         elif self.player.x > x:

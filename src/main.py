@@ -82,10 +82,10 @@ def main():
     # On initialise le joueur et le renderer de la carte
     player = Player(380, 340, tmx_data, "../assets/characters/teacher.png")
     map_renderer = MapRenderer(tmx_data)
-    teacher = TeacherAgent(12*TILE_SIZE, 12*TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
+    teacher = TeacherAgent(4*TILE_SIZE, 10*TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
     child  = ChildAgent(19*TILE_SIZE, 14*TILE_SIZE, tmx_data, "../assets/characters/01.png")
     
-    #toybox = Toybox(32*6, 32*9, tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
+    toybox = Toybox(32*6, 32*9, tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
     candy_pos = (TILE_SIZE*6, TILE_SIZE*9)
     # Boucle principale
     clock = pygame.time.Clock()
@@ -130,7 +130,7 @@ def main():
 
         # On creer notre environnement
         environment = {
-            "toybox_pos": (candy_pos[0], candy_pos[1]),
+            "toybox_pos": (toybox.x, toybox.y),
             "child": [child],
             "teacher": (teacher.player.x, teacher.player.y),
             "player": (player.x, player.y)
@@ -139,7 +139,7 @@ def main():
 
 
         # On vérifie les collisions
-        #checkCollision(environment, [child], teacher, toybox)
+        checkCollision(environment, [child], teacher, toybox)
 
         scores = {
             "child": child.score,
@@ -148,8 +148,8 @@ def main():
 
         draw_scores(screen, scores, font)
 
-        #toybox.animate()
-        #toybox.draw(screen)
+        toybox.animate()
+        toybox.draw(screen)
         
         # On met à jour le joueur et on le dessine
         player.update(keys)

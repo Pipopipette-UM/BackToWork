@@ -174,11 +174,11 @@ class Player:
             else:
                 self.play_unique_animation([56 * 6 + 8 + i for i in range(4)])
         elif name == "hurt":
-            self.play_unique_animation([56 * 19 + i + direction_frames[self.direction] * 3 for i in range(3)])
+            self.play_unique_animation([56 * 19 + i + direction_frames[self.direction] * 3 for i in range(3)], "hurt")
         elif name == "shoot":
-            self.play_unique_animation([56 * 18 + i + direction_frames[self.direction] * 3 for i in range(3)])
+            self.play_unique_animation([56 * 18 + i + direction_frames[self.direction] * 3 for i in range(3)], "shoot")
         elif name == "catch":
-            self.play_unique_animation([56 * 15 + i + direction_frames[self.direction] * 6 for i in range(6)])
+            self.play_unique_animation([56 * 15 + i + direction_frames[self.direction] * 6 for i in range(6)], "catch")
 
 
     def play_unique_animation(self, animation_frames=None, action="idle"):
