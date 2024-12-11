@@ -1,7 +1,7 @@
 from agent import Agent, State
-from pathfinding import TileUtils
-from pathfinding import AStar
 from pathfinding import Dijkstra
+from pathfinding import TileUtils
+
 
 class TeacherAgent(Agent):
 
