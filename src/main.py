@@ -3,9 +3,11 @@ from pytmx import load_pygame
 
 from agent import State
 from child_agent import ChildAgent
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT, DISPLAY_PATH, USE_PLAYER, FRAMES_PER_SECOND
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT, DISPLAY_PATH, USE_PLAYER, FRAMES_PER_SECOND, MAX_HUNGRY_TIMER
 from map_renderer import MapRenderer
 from player import Player
+from src import constants
+from src.constants import TEST_MODE
 from toybox import Toybox
 from teacher_agent import TeacherAgent
 
@@ -93,6 +95,7 @@ def main():
     # Boucle principale
     clock = pygame.time.Clock()
     running = True
+    frame_count = 0
     while running:
         # On affiche les fps dans le caption de la fenêtre
         pygame.display.set_caption(f"Back to Work! - FPS: {int(clock.get_fps())}")
@@ -177,6 +180,31 @@ def main():
 
         # Latence pour maintenir un taux de rafraîchissement constant de 60 FPS
         dt = clock.tick(FRAMES_PER_SECOND) / 1000
+
+        if TEST_MODE:
+            frame_count += 1
+
+            # On vérifie si on a atteint le nombre de frames par seconde
+            if frame_count >= 60 * 60:
+                print(f"ToyBoxDelay : {constants.TOYBOX_DELAY} - Scores :" + str(scores))
+                frame_count = 0
+                for child in children:
+                    child.player.x = CHILDREN_POS[children.index(child)][0]
+                    child.player.y = CHILDREN_POS[children.index(child)][1]
+                    child.state = State.IDLE
+                    child.score = 0
+                    child.hungry_timer = 0
+                    child.path = []
+                    child.grid = []
+                teacher.state = State.IDLE
+                teacher.score = 0
+                teacher.path = []
+                teacher.grid = []
+                teacher.player.x = 12 * TILE_SIZE
+                teacher.player.y = 12 * TILE_SIZE
+
+                teacher.state = State.IDLE
+                constants.TOYBOX_DELAY += 1
 
     pygame.quit()
 

@@ -1,6 +1,5 @@
-import pygame
-
 from constants import TILE_SIZE
+from src import constants
 from tilemap import TileMap
 
 
@@ -20,7 +19,7 @@ class Toybox:
         self.unique_animation = None
         self.unique_animation_frame = 0
 
-        self.timeBeforeFull = 300
+        self.timeBeforeFull = constants.TOYBOX_DELAY
         self.timePassedEmpty = 0
 
     def get_path_layer(self):
