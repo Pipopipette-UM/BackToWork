@@ -88,8 +88,6 @@ class TeacherAgent(Agent):
         self.move_to_position(next_pos[0], next_pos[1])
 
     def search_child(self):
-        child_x, child_y = self.target.player.x, self.target.player.y
-        self.grid, self.path = Dijkstra.find_path((self.player.x, self.player.y), (child_x, child_y), self.player.path_layer)
 
         if len(self.path) <= 1:
             return
