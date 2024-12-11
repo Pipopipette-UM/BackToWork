@@ -53,16 +53,16 @@ class ChildAgent(Agent):
         Planifie l'action à effectuer en fonction de l'état actuel.
         """
         if self.state == State.HUNGRY:
-            self.path = []
-            (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), self.beliefs["toybox_pos"],
-                                                        self.player.path_layer)
+            if not self.path:
+                (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), self.beliefs["toybox_pos"],
+                                                            self.player.path_layer)
         elif self.state == State.IDLE:
             self.path = []
             self.grid = []
         elif self.state == State.RUNNING_BACK:
-            self.path = []
-            (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), self.base_position,
-                                                        self.player.path_layer)
+            if not self.path:
+                (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), self.base_position,
+                                                            self.player.path_layer)
 
     def execute(self):
         """
@@ -104,7 +104,7 @@ class ChildAgent(Agent):
             self.player.animate()
             return
 
-        next_pos = self.path[1]
+        next_pos = self.path[0]
         if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
             self.path.pop(0)
 
@@ -120,7 +120,7 @@ class ChildAgent(Agent):
             return
 
         # On récupère la prochaine position à atteindre et on la retire de la liste des positions à parcourir.
-        next_pos = self.path[1]
+        next_pos = self.path[0]
         if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
             self.path.pop(0)
 
