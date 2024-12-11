@@ -3,7 +3,7 @@ from pytmx import load_pygame
 
 from agent import State
 from child_agent import ChildAgent
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT, DISPLAY_PATH, USE_PLAYER
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT, DISPLAY_PATH, USE_PLAYER, FRAMES_PER_SECOND
 from map_renderer import MapRenderer
 from player import Player
 from toybox import Toybox
@@ -75,7 +75,7 @@ def main():
 
     # On initialise le renderer de la carte et les agents
     map_renderer = MapRenderer(tmx_data)
-    teacher = TeacherAgent(12*TILE_SIZE, 12*TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
+    teacher = TeacherAgent(12 * TILE_SIZE, 12 * TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
     children = [ChildAgent(CHILDREN_POS[i][0], CHILDREN_POS[i][1], tmx_data, "../assets/characters/0" + str(i + 1) + ".png" if i + 1 < 10 else "../assets/characters/" + str(i + 1) + ".png") for i in range(CHILDREN_COUNT)]
     toybox = Toybox(TOYBOX_POS[0], TOYBOX_POS[1], tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
     player = None
@@ -94,6 +94,9 @@ def main():
     clock = pygame.time.Clock()
     running = True
     while running:
+        # On affiche les fps dans le caption de la fenêtre
+        pygame.display.set_caption(f"Back to Work! - FPS: {int(clock.get_fps())}")
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -158,22 +161,22 @@ def main():
         for child in children:
             child.update(environment, dt)
 
-        # On dessine les agents de haut en bas
-        for agent in sorted(children + [teacher], key=lambda x: x.player.y):
-            agent.player.draw(screen)
-
         # On dessine les chemins des agents
-        if DISPLAY_PATH :
+        if DISPLAY_PATH:
             display_path(teacher.grid, (255, 0, 0), screen, font)
             for child in children:
                 display_path(child.grid, (0, 255, 0), screen, font)
+
+        # On dessine les agents de haut en bas
+        for agent in sorted(children + [teacher], key=lambda x: x.player.y):
+            agent.player.draw(screen)
 
         # On dessine la partie de la carte au-dessus du joueur
         map_renderer.draw(screen, 2)
         pygame.display.flip()
 
         # Latence pour maintenir un taux de rafraîchissement constant de 60 FPS
-        dt = clock.tick(60) / 1000
+        dt = clock.tick(FRAMES_PER_SECOND) / 1000
 
     pygame.quit()
 
