@@ -5,17 +5,17 @@ from agent import State
 from child_agent import ChildAgent
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, CHILDREN_POS, TOYBOX_POS, CHILDREN_COUNT, DISPLAY_PATH, USE_PLAYER, FRAMES_PER_SECOND
 from map_renderer import MapRenderer
-from player import Player
+from character import Character
 from toybox import Toybox
 from teacher_agent import TeacherAgent
 
 
 def check_collision(environment, children, teacher, toybox):
-    pos_teacher = get_tile_coordinate(environment["teacher"].player.x, environment["teacher"].player.y)
+    pos_teacher = get_tile_coordinate(environment["teacher"].character.x, environment["teacher"].character.y)
     pos_toybox = get_tile_coordinate(environment["toybox_pos"][0], environment["toybox_pos"][1])
     for child in children:
         if child.state == State.HUNGRY:
-            pos_child = get_tile_coordinate(child.player.x, child.player.y)
+            pos_child = get_tile_coordinate(child.character.x, child.character.y)
             if pos_child[0] == pos_teacher[0] and pos_child[1] == pos_teacher[1] or pos_child[2] == pos_teacher[2] and pos_child[3] == pos_teacher[3]:
                 child.teacher_caught_you()
                 teacher.child_caught()
@@ -30,11 +30,11 @@ def check_collision(environment, children, teacher, toybox):
 
 
 
-def get_tile_coordinate(player_x, player_y):
-    tile_x_left = player_x // TILE_SIZE
-    tile_y_left = player_y // TILE_SIZE
-    tile_x_right = (player_x + TILE_SIZE - 1) // TILE_SIZE
-    tile_y_right = player_y // TILE_SIZE
+def get_tile_coordinate(character_x, character_y):
+    tile_x_left = character_x // TILE_SIZE
+    tile_y_left = character_y // TILE_SIZE
+    tile_x_right = (character_x + TILE_SIZE - 1) // TILE_SIZE
+    tile_y_right = character_y // TILE_SIZE
 
     return tile_x_left, tile_y_left, tile_x_right, tile_y_right
 
@@ -42,7 +42,7 @@ def get_tile_coordinate(player_x, player_y):
 def draw_scores(screen, scores, font):
     """Dessine les scores à l'écran."""
     score_texts = [
-        f"Child: {scores['children']}",
+        f"Children: {scores['children']}",
         f"Teacher: {scores['teacher']}"
     ]
 
@@ -87,7 +87,7 @@ def main():
     }
 
     if USE_PLAYER:
-        player = Player(380, 340, tmx_data, "./assets/characters/teacher.png")
+        player = Character(380, 340, tmx_data, "./assets/characters/teacher.png")
         environment["player"] = (player.x, player.y)
 
     # Boucle principale
@@ -130,9 +130,9 @@ def main():
         # On met à jour les portes
 
         if USE_PLAYER:
-            map_renderer.update_doors([player, teacher.player] + [child.player for child in children])
+            map_renderer.update_doors([player, teacher.character] + [child.character for child in children])
         else :
-            map_renderer.update_doors([teacher.player] + [child.player for child in children])
+            map_renderer.update_doors([teacher.character] + [child.character for child in children])
 
         # On dessine la carte sous le joueur
         screen.fill((58, 58, 80))  # Couleur de fond
@@ -168,8 +168,8 @@ def main():
                 display_path(child.grid, (0, 255, 0), screen, font)
 
         # On dessine les agents de haut en bas
-        for agent in sorted(children + [teacher], key=lambda x: x.player.y):
-            agent.player.draw(screen)
+        for agent in sorted(children + [teacher], key=lambda x: x.character.y):
+            agent.character.draw(screen)
 
         # On dessine la partie de la carte au-dessus du joueur
         map_renderer.draw(screen, 2)

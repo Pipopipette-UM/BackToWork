@@ -4,7 +4,7 @@ from constants import TILE_SIZE
 from tilemap import TileMap
 
 
-class Player:
+class Character:
     def __init__(self, x, y, tmx_data, filename):
         self.x = x
         self.y = y

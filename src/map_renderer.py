@@ -36,7 +36,7 @@ class MapRenderer:
                         })
         return doors
 
-    def update_doors(self, players):
+    def update_doors(self, characters):
         """Met à jour l'état et l'animation des portes en fonction de la proximité du joueur."""
         for door in self.doors:
             # On calcule la position centrale de la porte
@@ -44,8 +44,8 @@ class MapRenderer:
             door_center_y = (door["y"] + 1.5) * self.tmx_data.tileheight  # Milieu de la porte (3 tuiles de hauteur)
 
             distance = float("inf")
-            for player in players:
-                distance = min(distance, ((door_center_x - player.x) ** 2 + (door_center_y - player.y) ** 2) ** 0.5)
+            for character in characters:
+                distance = min(distance, ((door_center_x - character.x) ** 2 + (door_center_y - character.y) ** 2) ** 0.5)
 
             # On met à jour l'état de la porte en fonction de la distance
             if distance < 3.4 * TILE_SIZE:  # Seuil de proximité

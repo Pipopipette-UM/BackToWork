@@ -28,7 +28,7 @@ class ChildAgent(Agent):
         """
         # On met à jour les croyances de l'agent en fonction de l'environnement
         self.beliefs["toybox_pos"] = environment["toybox_pos"]
-        tile_x, tile_y = TileUtils.position_to_tile(self.player.x, self.player.y)
+        tile_x, tile_y = TileUtils.position_to_tile(self.character.x, self.character.y)
         base_tile_x, base_tile_y = TileUtils.position_to_tile(self.base_position[0], self.base_position[1])
         self.beliefs["at_base"] = tile_x == base_tile_x and tile_y == base_tile_y
 
@@ -54,15 +54,15 @@ class ChildAgent(Agent):
         """
         if self.state == State.HUNGRY:
             if not self.path:
-                (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), self.beliefs["toybox_pos"],
-                                                            self.player.path_layer)
+                (self.grid, self.path) = Dijkstra.find_path((self.character.x, self.character.y), self.beliefs["toybox_pos"],
+                                                            self.character.path_layer)
         elif self.state == State.IDLE:
             self.path = []
             self.grid = []
         elif self.state == State.RUNNING_BACK:
             if not self.path:
-                (self.grid, self.path) = Dijkstra.find_path((self.player.x, self.player.y), self.base_position,
-                                                            self.player.path_layer)
+                (self.grid, self.path) = Dijkstra.find_path((self.character.x, self.character.y), self.base_position,
+                                                            self.character.path_layer)
 
     def execute(self):
         """
@@ -80,7 +80,7 @@ class ChildAgent(Agent):
         self.deliberate()
         self.plan()
         self.execute()
-        self.player.animate()
+        self.character.animate()
 
     def teacher_caught_you(self):
         self.state = State.RUNNING_BACK
@@ -88,7 +88,7 @@ class ChildAgent(Agent):
         self.hungry_timer = random.randint(MIN_HUNGRY_TIMER, MAX_HUNGRY_TIMER)
         self.path = []
         self.grid = []
-        self.player.play_unique_animation_by_name("hurt")
+        self.character.play_unique_animation_by_name("hurt")
 
     def play_with_toy(self):
         self.score += 1
@@ -99,13 +99,13 @@ class ChildAgent(Agent):
     def search_candy(self):
         # Parfois le coffre est vide, donc on fait attendre le joueur.
         if len(self.path) == 0:
-            self.player.action = "idle"
-            self.player.direction = "up"
-            self.player.animate()
+            self.character.action = "idle"
+            self.character.direction = "up"
+            self.character.animate()
             return
 
         next_pos = self.path[0]
-        if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
+        if TileUtils.position_to_tile(self.character.x, self.character.y) == next_pos:
             self.path.pop(0)
 
         next_pos = TileUtils.tile_to_position(next_pos[0], next_pos[1])
@@ -114,14 +114,14 @@ class ChildAgent(Agent):
     def back_to_spawn(self):
         # Si le joueur est arrivé à sa position de base, on le met en mode IDLE (lecture).
         if len(self.path) == 0:
-            self.player.direction = "down"
-            self.player.action = "read"
+            self.character.direction = "down"
+            self.character.action = "read"
             self.state = State.IDLE
             return
 
         # On récupère la prochaine position à atteindre et on la retire de la liste des positions à parcourir.
         next_pos = self.path[0]
-        if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
+        if TileUtils.position_to_tile(self.character.x, self.character.y) == next_pos:
             self.path.pop(0)
 
         next_pos = TileUtils.tile_to_position(next_pos[0], next_pos[1])
