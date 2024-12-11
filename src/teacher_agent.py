@@ -12,7 +12,8 @@ class TeacherAgent(Agent):
         self.path = []
         self.beliefs = {
             "at_base": True,
-            "children": []
+            "children": [],
+            "toybox_pos": None
         }
 
     def brf(self, environment, dt):
@@ -21,6 +22,7 @@ class TeacherAgent(Agent):
         base_tile_x, base_tile_y = TileUtils.position_to_tile(self.base_position[0], self.base_position[1])
         self.beliefs["at_base"] = tile_x == base_tile_x and tile_y == base_tile_y
         self.beliefs["children"] = environment["children"]
+        self.beliefs["toybox_pos"] = environment["toybox_pos"]
 
     def deliberate(self):
         if self.beliefs["at_base"]:
@@ -28,8 +30,11 @@ class TeacherAgent(Agent):
         else:
             self.state = State.RUNNING_BACK
 
+        distance_closer_child = 100000000
         for child in self.beliefs["children"]:
-            if child.state == State.HUNGRY:
+            test_distance_child = abs(child.player.x - self.player.x) + abs(child.player.y - self.player.y) + abs(child.player.y - self.beliefs["toybox_pos"][1]) + abs(child.player.x - self.beliefs["toybox_pos"][0])
+            if child.state == State.HUNGRY and test_distance_child < distance_closer_child:
+                distance_closer_child = test_distance_child
                 self.target = child
                 self.state = State.HUNTING # Si un enfant a faim, on passe en mode chasse
 
@@ -73,8 +78,6 @@ class TeacherAgent(Agent):
             self.player.direction = "down"
             return
 
-        # Probleme lors du retour du prof a voir
-        # Aussi pourquoi quelques fois c'est self.path[0] et d'autres c'est self.path[1]
         next_pos = self.path[0]
 
         if TileUtils.position_to_tile(self.player.x, self.player.y) == next_pos:
