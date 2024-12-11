@@ -2,7 +2,7 @@ from enum import Enum
 
 from player import Player
 
-State = Enum('agentState', [("IDLE", 1), ("HUNGRY", 2), ("RUNNING_BACK", 3), ("LOOKING", 4)])
+State = Enum('agentState', [("IDLE", 1), ("HUNGRY", 2), ("RUNNING_BACK", 3), ("HUNTING", 4)])
 
 class Agent:
 

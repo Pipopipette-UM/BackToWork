@@ -11,7 +11,7 @@ from teacher_agent import TeacherAgent
 
 
 def check_collision(environment, children, teacher, toybox):
-    pos_teacher = get_tile_coordinate(environment["teacher"][0], environment["teacher"][1])
+    pos_teacher = get_tile_coordinate(environment["teacher"].player.x, environment["teacher"].player.y)
     pos_toybox = get_tile_coordinate(environment["toybox_pos"][0], environment["toybox_pos"][1])
     for child in children:
         if child.state == State.HUNGRY:
@@ -83,7 +83,7 @@ def main():
     environment = {
         "toybox_pos": (TOYBOX_POS[0], TOYBOX_POS[1]),
         "children": children,
-        "teacher": (teacher.player.x, teacher.player.y),
+        "teacher": teacher,
     }
 
     if USE_PLAYER:
