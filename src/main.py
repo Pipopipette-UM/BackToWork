@@ -71,13 +71,13 @@ def main():
     pygame.display.set_caption("Back to Work!")
 
     # On charge la carte TMX
-    tmx_data = load_pygame("../map/BacktoWork.tmx")
+    tmx_data = load_pygame("./map/BacktoWork.tmx")
 
     # On initialise le renderer de la carte et les agents
     map_renderer = MapRenderer(tmx_data)
-    teacher = TeacherAgent(12 * TILE_SIZE, 12 * TILE_SIZE, tmx_data, "../assets/characters/teacher.png")
-    children = [ChildAgent(CHILDREN_POS[i][0], CHILDREN_POS[i][1], tmx_data, "../assets/characters/0" + str(i + 1) + ".png" if i + 1 < 10 else "../assets/characters/" + str(i + 1) + ".png") for i in range(CHILDREN_COUNT)]
-    toybox = Toybox(TOYBOX_POS[0], TOYBOX_POS[1], tmx_data, "../assets/object/toybox_empty.png","../assets/object/toybox_full.png")
+    teacher = TeacherAgent(12 * TILE_SIZE, 12 * TILE_SIZE, tmx_data, "./assets/characters/teacher.png")
+    children = [ChildAgent(CHILDREN_POS[i][0], CHILDREN_POS[i][1], tmx_data, "./assets/characters/0" + str(i + 1) + ".png" if i + 1 < 10 else "./assets/characters/" + str(i + 1) + ".png") for i in range(CHILDREN_COUNT)]
+    toybox = Toybox(TOYBOX_POS[0], TOYBOX_POS[1], tmx_data, "./assets/object/toybox_empty.png","./assets/object/toybox_full.png")
     player = None
 
     environment = {
@@ -87,7 +87,7 @@ def main():
     }
 
     if USE_PLAYER:
-        player = Player(380, 340, tmx_data, "../assets/characters/teacher.png")
+        player = Player(380, 340, tmx_data, "./assets/characters/teacher.png")
         environment["player"] = (player.x, player.y)
 
     # Boucle principale

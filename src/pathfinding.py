@@ -1,11 +1,6 @@
-import constants
-import pygame
-
 import numpy as np
 
-from numpy import inf
-
-import heapq
+import constants
 
 
 class TileUtils:

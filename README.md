@@ -43,5 +43,5 @@ Follow these steps to set up and run the project:
    After the environment is set up, run the game using:
 
    ```bash
-   python main.py
+   python src/main.py
    ```
