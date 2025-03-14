@@ -1,5 +1,7 @@
 # Back to Work!
 
+![back_to_work](https://github.com/user-attachments/assets/a696e308-8518-48a4-b091-4fbc003fdf1d)
+
 ## Requirements
 
 To run this project, you need Python 3.x and the following libraries:
